@@ -6,7 +6,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link } from "react-router-dom";
-import { auth, db } from "../auth/firebase";
+import { auth, db, logout } from "../auth/firebase";
 import { useEffect, useState } from "react";
 
 const Header = () => {
@@ -50,7 +50,7 @@ const Header = () => {
                 <Link to="/login">
                   <Button variant="contained">Login</Button>
                 </Link>
-                <Button>Logout</Button>
+                <Button onClick={logout}>Logout</Button>
               </Nav>
               <Navbar.Text>
                 {name ? `Welcome, ${name}` : "Welcome, Guest"}

@@ -44,12 +44,15 @@ const registerWithEmailAndPassword = async (name, email, password) => {
 
 export const loginWithEmailAndPassword = async (email, password) => {
   try {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    console.log(`${result.user} logged in`);
+    await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     console.log(error);
     alert(error.message);
   }
+};
+
+export const logout = () => {
+  auth.signOut();
 };
 
 export { auth, db, registerWithEmailAndPassword };
