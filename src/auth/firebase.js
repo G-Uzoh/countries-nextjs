@@ -12,7 +12,6 @@ import {
   collection,
   getFirestore,
   query,
-  getDoc,
 } from "firebase/firestore";
 import { getFavourites } from "../store/favouritesSlice";
 
@@ -48,7 +47,7 @@ const registerWithEmailAndPassword = async (name, email, password) => {
     console.log(user);
   } catch (error) {
     console.log(error);
-    alert(error.message);
+    // alert(error.message);
   }
 };
 
@@ -57,7 +56,7 @@ export const loginWithEmailAndPassword = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     console.log(error);
-    alert(error.message);
+    // alert(error.message);
   }
 };
 
