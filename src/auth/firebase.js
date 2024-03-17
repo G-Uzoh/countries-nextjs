@@ -4,7 +4,17 @@ import {
   getAuth,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
+import {
+  addDoc,
+  deleteDoc,
+  getDocs,
+  where,
+  collection,
+  getFirestore,
+  query,
+  getDoc,
+} from "firebase/firestore";
+import { getFavourites } from "../store/favouritesSlice";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -53,6 +63,76 @@ export const loginWithEmailAndPassword = async (email, password) => {
 
 export const logout = () => {
   auth.signOut();
+};
+
+export const getNameOfUser = async (user) => {
+  if (user) {
+    const q = query(collection(db, "users"), where("uid", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const name = doc.data().name;
+      console.log("Name from getNameOfuser: ", name);
+      return name;
+    });
+  }
+  return null;
+};
+
+export const addFavouriteToFirebase = async (uid, name) => {
+  try {
+    await addDoc(collection(db, `users/${uid}/favourites`), { name });
+    console.log("Favourite added to Firebase database");
+  } catch (error) {
+    console.log("Error adding favourite to Firebase database: ", error);
+  }
+};
+
+export const removeFavouriteFromFirebase = async (uid, name) => {
+  console.log("Name: ", name);
+
+  try {
+    if (!name) {
+      console.error(
+        "Error removing favourite from Firebase database: Name parameter is undefined"
+      );
+      return;
+    }
+
+    const q = query(
+      collection(db, `users/${uid}/favourites`),
+      where("name", "==", name)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (doc) => {
+      await deleteDoc(doc.ref);
+      console.log("Favourite removed from Firebase database");
+    });
+  } catch (error) {
+    console.log("Error removing favourite from Firebase database: ", error);
+  }
+};
+
+export const clearFavouritesFromFirebase = async (uid) => {
+  try {
+    const q = query(collection(db, `users/${uid}/favourites`));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      deleteDoc(doc.ref);
+      console.log("Favourites removed from Firebase database");
+    });
+  } catch (error) {
+    console.log("Error removing favourites from Firebase database: ", error);
+  }
+};
+
+export const getFavouritesFromSource = () => async (dispatch) => {
+  const user = auth.currentUser;
+
+  if (user) {
+    const q = await getDocs(collection(db, `users/${user.uid}/favourites`));
+    const favourites = q.docs.map((doc) => doc.data().name);
+    dispatch(getFavourites(favourites));
+  }
 };
 
 export { auth, db, registerWithEmailAndPassword };
