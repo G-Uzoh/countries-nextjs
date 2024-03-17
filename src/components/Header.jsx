@@ -5,24 +5,27 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, db, logout } from "../auth/firebase";
 import { useEffect, useState } from "react";
 
 const Header = () => {
+  const [name, setName] = useState("");
+
   const [user] = useAuthState(auth);
 
-  const [name, setName] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUserData = async () => {
-      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach(doc => {
-        const name = doc.data().name;
-        setName(name);
-      });
-    }
+      const res = await getDocs(collection(db, "users"));
+      
+      const userData = res.docs
+        .map((doc) => doc.data())
+        .filter((doc) => doc.uid === user?.uid);
+
+      setName(userData[0]?.name);
+    };
 
     if (user) getUserData();
   }, [user]);
@@ -44,13 +47,27 @@ const Header = () => {
                 <Link to="/favourites">
                   <Button variant="contained">Favourites</Button>
                 </Link>
-                <Link to="/register">
-                  <Button variant="contained">Register</Button>
-                </Link>
-                <Link to="/login">
-                  <Button variant="contained">Login</Button>
-                </Link>
-                <Button onClick={logout}>Logout</Button>
+                {!user && (
+                  <Link to="/register">
+                    <Button variant="contained">Register</Button>
+                  </Link>
+                )}
+                {!user && (
+                  <Link to="/login">
+                    <Button variant="contained">Login</Button>
+                  </Link>
+                )}
+                {user && (
+                  <Button
+                    onClick={() => {
+                      logout();
+                      setName("");
+                      navigate("/");
+                    }}
+                  >
+                    Logout
+                  </Button>
+                )}
               </Nav>
               <Navbar.Text>
                 {name ? `Welcome, ${name}` : "Welcome, Guest"}
