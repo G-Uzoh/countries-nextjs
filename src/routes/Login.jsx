@@ -17,7 +17,7 @@ const Login = () => {
 
   const handleLoginOnKeyDown = (e) => {
     if (e.key === "Enter") loginWithEmailAndPassword(email, password);
-  }
+  };
 
   useEffect(() => {
     if (loading) return;
@@ -25,21 +25,34 @@ const Login = () => {
   }, [loading, user]);
 
   return (
-    <div>
-      <h1>Login</h1>
-      <input
-        type="text"
-        value={email}
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        value={password}
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-        onKeyDown={handleLoginOnKeyDown}
-      />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <h2>Login</h2>
+      <div style={{margin: 20}}>
+        <div style={{marginTop: 10}}>
+          <input
+            type="text"
+            value={email}
+            placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div style={{marginTop: 10}}>
+          <input
+            type="password"
+            value={password}
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleLoginOnKeyDown}
+          />
+        </div>
+      </div>
       <Button onClick={handleLogin}>Login</Button>
     </div>
   );
