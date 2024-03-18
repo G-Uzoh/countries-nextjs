@@ -27,7 +27,10 @@ const CountriesSingle = () => {
           setWeather(data);
           setLoading(false);
         } else {
-          console.log("No weather data available");
+          Swal.fire({
+            text: "No weather data available",
+            icon: "info",
+          });
         }
 
         console.log("Data: ", data);
@@ -35,7 +38,11 @@ const CountriesSingle = () => {
 
       fetchData();
     } catch (error) {
-      console.log("Error: ", error);
+      Swal.fire({
+        title: "Error",
+        text: `${error}`,
+        icon: "error",
+      })
       setError(true);
     }
   }, [country?.capital]);
@@ -64,7 +71,7 @@ const CountriesSingle = () => {
           {" "}
           <Image
             thumbnail
-            src={`https://source.unsplash.com/featured/1600x900?${country?.name?.common}`}
+            src={`${country?.flags?.svg}`}
           />
         </Col>
         <Col>
