@@ -2,14 +2,18 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import Map from "../components/Map";
 
 const CountriesSingle = () => {
   const [weather, setWeather] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [coordinates, setCoordinates] = useState("");
 
   const location = useLocation();
+
   const country = location.state?.country;
+  const capital = location?.state?.country?.capital[0];
 
   const navigate = useNavigate();
 
@@ -32,8 +36,6 @@ const CountriesSingle = () => {
             icon: "info",
           });
         }
-
-        console.log("Data: ", data);
       };
 
       fetchData();
@@ -42,12 +44,30 @@ const CountriesSingle = () => {
         title: "Error",
         text: `${error}`,
         icon: "error",
-      })
+      });
       setError(true);
     }
   }, [country?.capital]);
 
-  console.log("Weather: ", weather?.weather);
+  useEffect(() => {
+    try {
+      const fetchData = async () => {
+        const res = await axios.get(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(
+            capital
+          )}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`
+        );
+        const data = res.data;
+
+        const coordinates = data.results[0]?.geometry?.location;
+        setCoordinates(coordinates);
+      };
+
+      fetchData();
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  }, [capital]);
 
   if (loading) {
     return (
@@ -65,40 +85,42 @@ const CountriesSingle = () => {
   }
 
   return (
-    <Container>
-      <Row className="m-5">
-        <Col>
-          {" "}
-          <Image
-            thumbnail
-            src={`${country?.flags?.svg}`}
-          />
-        </Col>
-        <Col>
-          <h2 className="display-4">{country?.name?.common}</h2>
-          <h3>Capital: {country?.capital}</h3>
-          {!error && weather && (
-            <div>
-              <p>
-                It is currently <strong>{weather?.main.temp}</strong> degrees in{" "}
-                {country?.capital} and {weather?.weather[0].description}.
-              </p>
-              <img
-                src={`http://openweathermap.org/img/wn/${weather?.weather[0].icon}@2x.png`}
-                alt={weather?.weather[0].description}
-              />
-            </div>
-          )}
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Button variant="light" onClick={() => navigate("/countries")}>
-            Back to Countries
-          </Button>
-        </Col>
-      </Row>
-    </Container>
+    <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+      <Container>
+        <Row className="m-3">
+          <Col>
+            {" "}
+            <Image thumbnail src={`${country?.flags?.svg}`} />
+          </Col>
+          <Col>
+            <h2 className="display-4">{country?.name?.common}</h2>
+            <h3>Capital: {country?.capital}</h3>
+            {!error && weather && (
+              <div style={{display: "flex", alignItems: "center"}}>
+                <p>
+                  It is currently <strong>{weather?.main.temp}</strong> degrees
+                  in {country?.capital} and {weather?.weather[0].description}.
+                </p>
+                <img
+                  src={`http://openweathermap.org/img/wn/${weather?.weather[0].icon}@2x.png`}
+                  alt={weather?.weather[0].description}
+                />
+              </div>
+            )}
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button variant="secondary" onClick={() => navigate("/countries")}>
+              Back to Countries
+            </Button>
+          </Col>
+        </Row>
+      </Container>
+      <div>
+        <Map coordinates={coordinates} />
+      </div>
+    </div>
   );
 };
 
