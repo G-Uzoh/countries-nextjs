@@ -15,6 +15,10 @@ const Login = () => {
     loginWithEmailAndPassword(email, password);
   };
 
+  const handleLoginOnKeyDown = (e) => {
+    if (e.key === "Enter") loginWithEmailAndPassword(email, password);
+  }
+
   useEffect(() => {
     if (loading) return;
     if (user) navigate("/countries");
@@ -34,6 +38,7 @@ const Login = () => {
         value={password}
         placeholder="Password"
         onChange={(e) => setPassword(e.target.value)}
+        onKeyDown={handleLoginOnKeyDown}
       />
       <Button onClick={handleLogin}>Login</Button>
     </div>
