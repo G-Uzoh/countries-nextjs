@@ -34,10 +34,11 @@ const Header = () => {
     <Container fluid>
       <Row>
         <Navbar bg="light" variant="light">
-          <Container className="justify-content-end">
+          <Container className="justify-content-center">
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-              <Nav>
+              <Nav style={{display: "flex", justifyContent: "space-between", width: "80vw", marginRight: 10}}>
+                <div>
                 <Link to="/">
                   <Button variant="contained">Home</Button>
                 </Link>
@@ -47,6 +48,8 @@ const Header = () => {
                 <Link to="/favourites">
                   <Button variant="contained">Favourites</Button>
                 </Link>
+                </div>
+                <div>
                 {!user && (
                   <Link to="/register">
                     <Button variant="contained">Register</Button>
@@ -68,8 +71,9 @@ const Header = () => {
                     Logout
                   </Button>
                 )}
+                </div>
               </Nav>
-              <Navbar.Text>
+              <Navbar.Text style={{width: "max-content"}}>
                 {name ? `Welcome, ${name}` : "Welcome, Guest"}
               </Navbar.Text>
             </Navbar.Collapse>

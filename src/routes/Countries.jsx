@@ -21,7 +21,6 @@ const Countries = () => {
   const countriesList = useSelector((state) => state.countries.countries);
   const favourites = useSelector((state) => state.favourites.favourites);
   const loading = useSelector((state) => state.countries.loading);
-  // const search = useSelector((state) => state.countries.search);
   const [search, setSearch] = useState("");
   const [user] = useAuthState(auth);
 
@@ -29,9 +28,6 @@ const Countries = () => {
     dispatch(initializeCountries());
     dispatch(getFavouritesFromSource());
   }, [dispatch]);
-
-  // TODO; Add a useEffect to filter the countriesList based on the search value
-  // useEffect(() => {}, [search]);
 
   if (loading) {
     return (
@@ -78,7 +74,9 @@ const Countries = () => {
                   ) : (
                     <FavoriteIcon
                       style={{ cursor: "pointer", color: "red" }}
-                      onClick={() => dispatch(addFavourite(country.name.common))}
+                      onClick={() =>
+                        dispatch(addFavourite(country.name.common))
+                      }
                     />
                   )}
                   <Link
@@ -129,8 +127,10 @@ const Countries = () => {
   }
 
   return (
-    <p>Sign in to view countries</p>
-  )
+    <div style={{display: "flex", justifyContent: "center", margin: "50px 0"}}>
+      <p>Sign in to view countries</p>
+    </div>
+  );
 };
 
 export default Countries;
