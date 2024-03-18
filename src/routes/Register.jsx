@@ -30,27 +30,42 @@ const Register = () => {
   }, [loading, user]);
 
   return (
-    <div>
-      <h1>Register Account</h1>
-      <input
-        type="text"
-        value={name}
-        placeholder="Enter your name"
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        type="email"
-        value={email}
-        placeholder="Enter your email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        value={password}
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Button onClick={registerAccount}>Register</Button>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <h2>Register Account</h2>
+      <div style={{margin: "30px 0"}}>
+        <div style={{marginTop: 10, width: "100%"}}>
+          <input
+            type="text"
+            value={name}
+            placeholder="Enter your name"
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div style={{marginTop: 10}}>
+          <input
+            type="email"
+            value={email}
+            placeholder="Enter your email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div style={{marginTop: 10}}>
+          <input
+            type="password"
+            value={password}
+            placeholder="Enter password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+      </div>
+      <Button onClick={registerAccount} style={{marginTop: 20}}>Register</Button>
     </div>
   );
 };
